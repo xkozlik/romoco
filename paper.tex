@@ -231,38 +231,38 @@ To summarize, the main contributions of this paper are:
 
 
 The analysis of protein structure aiming to reveal tunnels has been supported by different computational software tools, which take the geometry of the protein as an input and explore the inner void space (e.g., MOLE~\cite{Petrek20071357} or CAVER 1.0~\cite{petrek2006caver}).
-Early methods for tunnel detection utilized a discretized 3D grid, where each cell was considered as occupied or free, depending on the presence of atoms of the protein.
+Early methods for tunnel detection utilized a discretized 3D grid, where each cell was considered as occupied or free depending on the presence of atoms of the protein.
 Tunnels can be then searched using standard graph-search methods, such as the Dijkstra's algorithm.
-Besides, the grid can be used to identify other relevant properties, like pockets, cavities, or channels~\cite{sehnal2013mole,petrek2006caver}.
+Besides, the grid can be used to identify other relevant properties like pockets, cavities, or channels~\cite{sehnal2013mole,petrek2006caver}.
 %One of the first grid-based approaches to the detection of tunnels in protein is the CAVER 1.0 algorithm by Pet\v{r}ek et al.~\cite{citeulike:6257975}.
 The obvious disadvantage of the grid-based methods is the high memory demand and their dependency on the grid resolution.
-Namely due to the high memory consumption, these methods are not suitable for tunnel detection in molecular dynamics and therefore they are used primarily for the analysis of static molecules or individual snapshots of the molecular dynamics.
+Due to the high memory consumption, these methods are not suitable for tunnel detection in dynamic proteins and therefore they are used primarily for the analysis of static molecules or individual snapshots of the dynamics.
 
 Currently the most widely used approach to tunnel detection is based on ordinary Voronoi diagrams (VD) or Weighted Voronoi diagrams (WVD).
 The ordinary VD is computed on points representing centers of all atoms, without considering the atomic radii.
 This may lead to the detection of tunnels with incorrect bottlenecks. % i.e., incorrect radius of a smallest probe that can traverse the tunnels.
-To overcome this, the weights of individual points can be determined by the van der Walls radii of the atoms in WVD.
-An alternative solution is to compute a non-weighted VD on an extended point set, where each atom is approximated by several spheres with a same small radius~\cite{yaffe2008,caver3,caverDetails}.
+To consider atoms with different radii, the weights of individual points are determined by the van der Walls radii of the atoms in WVD.
+An alternative solution is to compute a non-weighted VD on an extended point set, where each atom is approximated by several spheres with a small radius~\cite{yaffe2008,caver3,caverDetails}.
 VD-based methods are memory less demanding, and also faster than the grid-based methods.
-The extension of the VD-based methods to molecular dynamics requires to construct the VD in all frames of the simulation and finding the correspondence over time between the tunnels detected in these frames.
+The extension of VD-based methods to dynamic molecules requires to construct VD in the frames being analyzed and finding the correspondences between them.
 The existing approaches often use hierarchical clustering to match Voronoi vertices and edges from different frames, which is computationally demanding~\cite{lindow2012dynamic,caverDetails}.
-Another problem of these approaches is the definition of the tunnel bottleneck threshold, which determines the minimal size of the narrowest tunnel point.
+Another problem of these approaches is the definition of tunnel bottleneck threshold, which determines the minimal size of the narrowest tunnel point.
 If the bottleneck radius is even slightly below this threshold, the tunnel is discarded. 
 This leads to the problem of missing tunnels in several or many snapshots of the MD simulation, even when the void space is still present in them.
 
 
 
 
-Alternatively, the tunnel detection in dynamic proteins can be formulated as a path planning problem in 4D (i.e., 3D $\times$ time) configuration space, assuming a spherical probe.
-This space can be searched using sampling-based motion planning methods, like Probabilistic Roadmaps (PRM)~\cite{kavrakiPRM} and Rapidly Exploring Random Tree (RRT)~\cite{lavalleRRT} and their modifications.
-In the sampling-based motion planning, the configuration space is randomly sampled and the samples are classified as free or occupied using collision detection.
+Alternatively, the tunnel detection in dynamic proteins can be formulated as path planning in 4D (i.e., 3D $\times$ time) configuration space assuming a spherical probe.
+This space can be searched using sampling-based motion planning methods like Probabilistic Roadmaps (PRM)~\cite{kavrakiPRM} and Rapidly Exploring Random Tree (RRT)~\cite{lavalleRRT} and their modifications.
+In sampling-based motion planning, the configuration space is randomly sampled and the samples are classified as free or non-free using collision detection.
 The collision detection is performed between the geometry of the robot (i.e., the probe) and the environment (the atoms of the protein).
 The collision-free samples are stored into a roadmap which is searched using standard graph-search methods for a path.
 The path in the roadmap then describes a motion in the workspace.
 
-The advantage of sampling-based motion planners is that they can cope with many-DOF (Degrees Of Freedom) robots and due to the black-box collision detection, they can also cope with robots of arbitrary shapes.
+The advantage of sampling-based motion planners is that they can cope with many-DOF (Degrees Of Freedom) robots and due to black-box collision detection, they can also cope with robots of arbitrary shapes.
 Beyond robotics, the sampling-based motion planners have been successfully applied to computational biology problems in studies related to protein folding~\cite{bayazit2001ligand,al2012motion,cortes2010simulating,amato2002using,raveh2009rapid,novinskaya2015improving,songPFintro,kirillova2008an}, ligand docking~\cite{cortes2010simulating,latombe1999motion,mollProt}, or analysis of loop motions~\cite{cortes2004geometric}.
-In these applications, the molecules are represented as a kinematic chain where the joint angles correspond to bonds of the molecules.
+In these applications, the molecules are represented as a kinematic chain where joint angles correspond to bonds of the molecules.
 
 %loop motions~\cite{cortes2004geometric},
 %protein folding~\cite{amato2002using,raveh2009rapid,novinskaya2015improving,songPFintro},
@@ -270,30 +270,32 @@ In these applications, the molecules are represented as a kinematic chain where 
 %or protein folding combined with ligand diffusion~\cite{cortes2010simulating}.
 RRT is a single-query motion planning method.
 It incrementally builds a configuration tree $\T$ rooted at the initial configuration.
-In each iteration of the RRT, a random configuration $\qrand$ is generated and its nearest node $\qnear$ in the tree  is found.
+In each iteration of RRT, a random configuration $\qrand$ is generated and its nearest node $\qnear$ in the tree  is found.
 A new configuration $\qnew$ is constructed on the line connecting $\qnear$ and $\qrand$ in the distance $\varepsilon$ (straight-line expansion).
 If $\qnew$ is collision-free, it is added to the tree.
 The algorithm terminates if the tree approaches the goal configuration to a predefined distance.
 
-In~\cite{guieysse2008structure,cortes2010simulating}, the RRT is used to compute exit pathways for a flexible ligand leading from the active site to the surface of the protein.
+In~\cite{guieysse2008structure,cortes2010simulating}, RRT is used to compute exit pathways for a flexible ligand leading from an active site to the surface of the protein.
 To cope with many-DOF ligands, the RRT-ML~\cite{cortes2007mlrrt} approach is employed as the basic planner in~\cite{cortes2010simulating}.
-The RRT-ML expands the tree primarily using those DOF that are essential for achieving the motion of the ligand (i.e., rotation and translation) and it employs the other DOFs (i.e., those that are responsible for conformation changes) if they hinder the growth of the tree.
+RRT-ML expands the tree primarily using those DOF that are essential for achieving the motion of the ligand (i.e., rotation
+and translation) and it employs the other DOFs (i.e., those that are responsible for conformation changes) if they hinder the growth of the tree.
 In~\cite{cortesMD}, the pathway is found for the opposite direction, from the active site towards the protein surface.
-The methods~\cite{guieysse2008structure,cortesMD} do not compute all tunnels explicitly, rather a single path.
+The methods~\cite{guieysse2008structure,cortesMD} do not compute all tunnels explicitly, rather a single pathway.
 
 A well known issue of sampling-based planners is the narrow passage problem.
 The narrow passage is a small region of the configuration space containing a part of the solution.
 As the samples are generated from the uniform distribution in RRT, the probability of placing the samples into the narrow passages is low and therefore, the probability of expanding the tree through a narrow passage is small~\cite{hannaWIS}.
 Consequently, many iterations are needed in order to put enough samples into the passages, which increases the computation time.
 
-A possible solution is to estimate the location of the narrow passages from the knowledge of the workspace and generate more samples in the difficult areas.
-The PRM-based planners can cope with the narrow passage problem by increasing the probability of sampling, e.g., around the medial axis~\cite{amatoOBRRT,amato2002using,wilmarthMAPRM}, or even by shifting the uniformly generated samples towards the medial axis~\cite{amatoOBPRM} or its approximation~\cite{hollemanMAPRM}.
-Another possible approach is to estimate the difficult regions online, e.g., based on the number of the collision-free samples around a given configuration~\cite{overmarsGauss,hsuBridge}.
-However, generating random samples in the difficult regions does not ensure the construction of a better tree in the case of RRT-based methods.
-As the RRT builds the tree incrementally, the tree can connect to a region with increased probability of sampling only if the growth of the tree is not blocked by obstacles.
-Instead of increasing the probability of sampling in all regions at once, e.g., along the whole medial axis, the tree has to be guided through the space to reach the regions gradually.
+A possible solution is to estimate the location of narrow passages from the knowledge of the workspace and generate more samples
+in the difficult areas.
+PRM-based planners can cope with the narrow passage problem by increasing the probability of sampling, e.g., around medial axis~\cite{amatoOBRRT,amato2002using,wilmarthMAPRM}, or even by shifting uniformly generated samples towards the medial axis~\cite{amatoOBPRM} or its approaximation~\cite{hollemanMAPRM}.
+Another approach is to estimate difficult regions online, e.g., based on the number of collision-free samples around a given configuration~\cite{overmarsGauss,hsuBridge}.
+Generating random samples in difficult regions however does not ensure the construction of a better tree in the case of RRT-based methods.
+As RRT builds the tree incrementally, the tree can connect to a region with increased probability of sampling only if the growth of the tree is not blocked by obstacles.
+Instead of increasing probability of sampling in all regions at once, e.g., along the whole medial axis, the tree has to be guided through the space to reach the regions gradually.
 For example, the random samples are generated from multiple regions, that are switched according to the progress of the tree.
-In~\cite{kardossRRTKK}, the samples are generated along several waypoints that are located close to the narrow passages.
+In~\cite{kardossRRTKK}, the samples are generated along several waypoints that are located close to narrow passages.
 A more general approach is to define a guiding path in the workspace and sequentially increase the probability of sampling along the path~\cite{vonasek2009rrt,denny2014marrt,denny2016dynamic}.
 %The guiding path can be computed e.g. using medial axis of the worskpace~\cite{denny2014marrt,denny2016dynamic}.
 
@@ -316,21 +318,22 @@ A more general approach is to define a guiding path in the workspace and sequent
 
 \section{Algorithm Overview}
 
-Our proposed algorithm for the detection of dynamic tunnels works as follows.
+The proposed algorithm works as follows.
 In each frame of the protein dynamics, first the void space is detected and represented by a set of spheres connected to a tree structure.
 To detect the void space, it is necessary to explore the internal parts of the protein and decide which of them are reachable from a given region (active site) or a set of regions (the void space from the previous frame).
 This leads to the incremental exploration of the void space, which can be realized using the RRT principle.
 
-After the void space is detected in a given frame, it is transferred to the next frame and pruned in order to remove collisions with the atoms in the next frame.
+After a void space is detected in a given frame, it is transferred to the next frame and pruned in order to remove collisions with the atoms in the next frame.
 During the void space detection, the exit points from the void space to the surface of the protein are detected.
 The existence of the exit points indicates the end of either a static or a dynamic tunnel.
 If the exit point can be connected with the active site in the given frame, the static tunnel can be reconstructed.
-This corresponds to the tunnel detected by the traditional methods.
+This corresponds to the tunnel detected by traditional methods.
 Otherwise, the detected void space is searched back in time to reconstruct our newly proposed dynamic tunnel.
 
-The work presented in this paper is the extension of our previous work~\cite{vonasek2017tunnel}, which proposed to guide the search of the configuration space using the Voronoi vertices of the Voronoi-based protein representation.
+The work presented in this paper is the extension of our previous work~\cite{vonasek2017tunnel}, which proposed to guide the search
+of the configuration space using the Voronoi vertices of the Voronoi-based protein representation.
 Our goal was to detect static tunnels in proteins.
-In this work, we focus on the detection of dynamic tunnels and their visual representation enabling the domain experts to further analyze the evolution and behavior of the protein void space.
+In this work, we focus on the detection of dynamic tunnels and their visual representation enabling the domain experts to further analyse the evolution and behavior of the protein void space.
 
 \section{Used Notation}
 
@@ -341,16 +344,20 @@ The void space is detected using the spherical probe of radius $\probe$.
 All possible configurations $q=(x,y,z)$ (positions) of the probe in the $i$-th frame form the configuration space $\C^i$.
 The probe is represented by a sphere $\Sprobe(q) \subset \R^3$ at a configuration $q$.
 The void space (the collision-free region) $\CF^i \subseteq \C^i$ is formed by configurations, where $\Sprobe$ can be placed without any collision with atoms, i.e.,  $\CF^i = \{q \in \C^i | \Sprobe(q) \cap \SS^i = \emptyset\}$.
-For each configuration $q\in\C^i$ we assume that its largest collision-free radius $r(q) \in \mathbf{R}, r(q)\ge 0$ can be computed, e.g., using collision detection.
-The outer space  $\CG^i \subset \CF^i$ of the protein is defined by configurations, where a large sphere can be placed without any collision, i.e., $\CG^i=\{q\in \C^i| \Sgprobe(q) \cap \SS^i = \emptyset \}$ where $\Sgprobe$ is the sphere of radius $\gprobe > \probe$ placed at the configuration $q$.
+For each configuration $q\in\C^i$ we assume that its largest collision-free radius $r(q) \in \mathbf{R}, r(q)\ge 0$ can be computed, e.g., 
+using collision detection.
+The outer space  $\CG^i \subset \CF^i$ of the protein is defined by configurations, where a large sphere can be placed without any collision,
+i.e., $\CG^i=\{q\in \C^i| \Sgprobe(q) \cap \SS^i = \emptyset \}$ where $\Sgprobe$ is the sphere of radius $\gprobe > \probe$ 
+placed at the configuration $q$.
 The exit points, where the tunnels leave the protein, are located in $\CG^i$.
-To determine whether two configurations $q_1, q_2 \in \CF^i$ can be connected, a line segment from $q_1$ to $q_2$ is constructed and discretized to several points, using $\varepsilon$ discretization step, and the collision detection is performed at all the points.
+To determine whether two configurations $q_1, q_2 \in \CF^i$ can be connected, a line segment from $q_1$ to $q_2$ is constructed
+and discretized to several points, using $\varepsilon$ discretization step, and the collision detection is performed at all the points.
 The two configurations can be connected if all intermediate points on the line are collision-free. 
-The 3D Euclidean metric is used to measure the distances in the configuration space.
+The 3D Euclidean metric is used to measure distances in the configuration space.
 
 The main purpose of the tunnel detection is the identification of tunnels, either static or dynamic, that connect the active site with the protein surface.
 We assume that the position (configuration) of the active site $\qinit \in \CF^i$ in each snapshot is known in advance or it is known that the probe cannot be placed at the active site.
-A static tunnel is a collision-free path leading from $\qinit \in \CF^i$ to an exit point $q \in \CG^i$, i.e., both the active site and the exit point are located in the same frame $i$.
+A static tunnel is a collision-free path leading from $\qinit \in \CF^i$ to an exit point $q \in \CG^i$, i.e., both active site and the exit point are located in the same frame $i$.
 A dynamic tunnel is a collision-free path leading from $\qinit \in \CF^i$ to an exit point $q \in \CG^j$, $j>i$, i.e., the active size and the exit point are located in different frames.
 
 The approximated WVD diagram of the atoms is computed by representing each atom using 12 balls of equal radii and computing the ordinary Voronoi diagram.
@@ -365,10 +372,10 @@ Let $\SSA^i \subset \SS^i$ denote a set of spheres representing these atoms in s
 
 To detect the void space, the collision-free region $\CF^i$ of the $i$-th frame is searched and represented as a tree structure of the collision-free configurations.
 The detection starts from a given active site $\qinit \in \CF^i$ or from a set of already detected collision-free positions of the probe.
-The second case is the result of the void space detection in the previous frame of the molecular dynamics.
+The second case is a result of the void space detection in the previous frame of the molecular dynamics.
 To maintain the connectivity between the void space from the previous frame and the newly discovered one (i.e., from $\CF^i$ to $\CF^{i+1}$, the void space has to be explored incrementally without adding non-reachable regions, such as cavities.
 Due to this reason, the void space cannot be automatically initialized using all Voronoi vertices $\VV^i$, though they are collision-free at the radius $\probe$, because the Voronoi vertices can be also placed in the cavities.
-The required incremental detection of the void space can be achieved by the exploration principle of the RRT planner, as RRT incrementally extends the tree of collision-free configurations.
+The required incremental detection of the void space can be achieved by the exploration principle of the RRT planner, as RRT incrementally extends a tree of collision-free configurations.
 The main loop of the algorithm for the void space detection is listed in Alg.~\ref{alg::main}. 
 
 We propose three modifications of the RRT for the purpose of void space detection.
@@ -384,7 +391,7 @@ These three modifications are described in detail in the following subsections.
 %\setstretch{\straa}
 {\small
 \caption{\label{alg::main}voidSpaceDetection}
-\KwIn{initial configuration tree $\T$,
+\KwIn{Initial configuration tree $\T$,
     initial set of blocking spheres $\SB'$,
     position of active site $\qinit\in\CF^i$,
 }
@@ -394,7 +401,7 @@ These three modifications are described in detail in the following subsections.
     phase--switching parameter~$\alpha$,
     prob. $\gb$~of sampling randomly from~$\C^i$,
 }
-\KwOut{configuration tree $\T$,
+\KwOut{Configuration tree $\T$,
     list of tunnel exit-points $P$
 }
 \hrule
@@ -745,7 +752,7 @@ detected      & tree transfer   & void space      & tree transfer    & void spac
 void space    & (splitting)      & detection       &  (splitting)     &  detection      & \\              
 \end{tabular}
 \caption{\label{fig::merging}
-An example of void space merging and splitting.
+An example of merging.
 The tree in the first frame with a denoted motion of one of the atoms (a). 
 A path exists between the nodes $A$ and $B$.
 The moving atom in the second frame causes splitting of the detected void space to three components (b).
@@ -919,7 +926,7 @@ After $n$ frames are processed, the algorithm results in $n$ configuration trees
 \KwIn{
     starting point $\qinit \in \CF$ in the first frame
 }
-\KwOut{list of configuration trees $\T_i$, list of exit points $P$, graph of components $G$
+\KwOut{list of configuration trees $\T_i$\;
 }
 \hrule
 $\T_0$.add($\qinit)$\;
@@ -928,12 +935,11 @@ $G = $ empty graph\;
 \For{$i  = 1 : n$}{
     $(\T_i, \SB)$ = treeTransfer($T_{i-1}, \CF^i$); // Alg.~\ref{alg::transfer}\\
     $(\T_i, P')$ = voidSpaceDetection($\T_{i},\SB)$; //Alg.~\ref{alg::main}\\
-    $P = P \cup P'$\;
-    $(V,E) =$ voidSpaceMerging($\T_{i}$); // V,E is a graph of merged void space  \\
-    $C$ = find components in the graph (V,E)\; 
-    add components $C$ to graph $G$ as nodes\;
-    connect exit points $P'$ with their components (nodes) in $G$\;
-    connect active site $\qinit \in \CF^i$ with its component (node) in $G$\;
+    $(V,E) =$ voidSpaceMerging($\T_{i}$); // V,E is a graph of merged void space
+    $C$ = find components in the graph (V,E)\;
+    add components $C$ to graph $G$
+    connect exit points $P'$ with their components in $G$\;
+    connect active site $\qinit^i$ with its component in $G$\;
 }
 }
 \end{algorithm}
@@ -946,14 +952,10 @@ After the void space is detected in all frames by Alg.~\ref{alg::dynamic}, the t
 The nodes in this graph are the components of the void space in each frame, the directed edges connect the components from the frame $i$ with the previous frame $i-1$ and the undirected edges connect the exit points and the active sites to their components.
 
 One tunnel is defined by an exit point and by an active site.
-A static tunnels is contained completely in one frame, therefore the path from $p \in P^i$ to $\qinit \in \CF^i$ in the graph
-$G$ describes it.
-Dynamic tunnels have active site and exit point in different frame, so to reconsruct them,
-a path from $p \in P^i$ the first reachable $\qinit \in \CF^j, j < i$ has to be searched in the grapg $G$.
-%If both these nodes are connected to the same component of the graph, they define a static tunnel.
-%Such a tunnel can be reconstructed by finding a path between these two nodes in the graph.
-%If there does not exist any path between the exit point $p \in P^i$ (exit point at frame $i$) and the active site $\qinit^i$ in the same frame, the dynamic tunnel has to start from a different active site (in one of the previous frames).
-%A path from $p$ to the first active site reachable in the graph (measured by the number of edges) describes the dynamic tunnel.
+If both these nodes are connected to the same component of the graph, they define a static tunnel.
+Such a tunnel can be reconstructed simply by finding a path between these two nodes in the graph.
+If there does not exist any path between the exit point $p \in P^i$ (exit point at frame $i$) and the active site $\qinit^i$ in the same frame, the dynamic tunnel has to start from a different active site (in one of the previous frames).
+A path from $p$ to the first active site reachable in the graph (measured by the number of edges) describes the dynamic tunnel.
 An example is depicted in Fig.~\ref{fig::components}.
 
 There are two possible reasons why the active site of the same frame cannot be reached.
@@ -1081,7 +1083,7 @@ one static tunnel was detected).
 The goal region of the protein was defined in the same way as for the static tunnel detection, i.e., $\gprobe=4$~\AA\ and 
 the surface atoms were detected using the $\alpha$-shape with the same radius.
 
-In each frame, the void space detection (Alg.~\ref{alg::main}) was performed with $\Imax=1,200$ iterations.
+In each frame, the void space detection (Alg.~\ref{alg::main}) was performed with $\Imax=1200$ iterations.
 The second phase of the search was switched after $\alpha=70$~\% of the iterations (i.e., after 840 iterations).
 Other parameters and their values used for the computation were $m=8$, $\da=5$~\AA, $\db=0.5$~\AA, $\gb=0.1$, and $\dts=2$~\AA.
 
@@ -1137,12 +1139,12 @@ The active site appears again inside the void space in frame 702.
 
 \begin{table}
 \centering
-\caption{\label{tab::dyn} The number of frames with detected dynamic tunnels. 
-    %The number of frames with static tunnels, detected by CAVER 3.0.
+\caption{\label{tab::dyn} The number of frames with detected dynamic tunnels. The number of frames
+    with static tunnels, detected by CAVER 3.0.
 }
 \begin{tabular}{ccccc}
 \toprule
-  \multirow{2}{*}{ Proposed method}   &  \multicolumn{2}{c}{ Static tunnels}   \\
+  \multirow{2}{*}{ Dynamic tunnel}   &  \multicolumn{2}{c}{ Static tunnels}   \\
                                      &  {\bf Exists} & {\bf Not exists} \\
 \midrule                                     
 {\bf End of tunnel/cavity}           & 1,324/661 & 1,027/725  \\
@@ -1284,7 +1286,7 @@ Our proposed method was able to further detect dynamic tunnels in other 1,027 fr
 
 
 The number of static tunnels decreases with the increasing probe size. 
-In order to increase the number of frames with detected static tunnels, the biochemists usually analyze the tunnel with a smaller probe size, e.g., 1~\AA\ or even 0.9~\AA.
+In order to increase the number of frames with detected static tunnels, the biochemists usually analyze the tunnel with a smaller probe size, e.g., 1~\AA or even 0.9~\AA.
 This leads to the detection of more tunnels, but on the other hand, their bottleneck may be too narrow for the passage of certain ligands.
 In the described experiment, we analyzed the proteins with a very large probe size (1.4~\AA).
 
