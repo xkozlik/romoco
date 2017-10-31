@@ -127,15 +127,14 @@ The results of the proposed method are demonstrated on an exemplary dataset obta
 \section{Introduction}
 
 Protein structures are essential components of all living organisms.
-Proper understanding of their structure and function is important in many fields, including protein engineering, drug design, agriculture, cosmetics, etc.
-Although this knowledge is still very hard to reveal, several protein structures have been already investigated in sufficient detail. 
-Such investigation can incorporate computational methods which help to analyze the geometry of protein structure,  its shape, surface area, and inner void space~\cite{gora2013gates}.
+Proper understanding of their structure and function is important in many fields, including protein engineering, drug design, agriculture, cosmetics, and others.
+Although this knowledge is still very hard to reveal, several protein structures have been already investigated in a sufficient detail. 
+Such investigation can incorporate computational methods which help to analyze the geometry of protein structure, its shape, surface area, and inner void space~\cite{gora2013gates}.
 
-For example, one task in protein engineering is to change selected properties of a protein, e.g., its stability under different outer conditions~\cite{Koudelakova2013} or its reactivity with other molecules~\cite{Pavlova2009}.
+For example, one task in protein engineering is to change the selected properties of a protein, e.g., its stability under different outer conditions~\cite{Koudelakova2013} or its reactivity with other molecules~\cite{Pavlova2009}.
 %This is reached by studying so called tunnels in proteins which can serve as the transportation paths for the ligand from the outside environment to the active site or vice versa.
 %For example, typical task in protein engineering is to change selected properties of a protein, e.g. its stability under different outer conditions [11] or activity of the protein towards other molecules [16]. 
-This can be achieved by detecting and studying so called tunnels in proteins which can serve as the transportation paths for the 
-ligand from the outside environment to the active site or vice versa. 
+This can be achieved by detecting and studying so called tunnels in proteins, which can serve as the transportation paths for the ligand which travels from the outside environment to the active site or vice versa. 
 The active site is a specific site, usually deeply buried inside the protein, where the chemical reaction between the protein and ligand can undergo. 
 The importance of tunnels can be demonstrated on the study where the mutations of amino acids located directly around the tunnel substantially improved the structural and kinetic stability of the studied protein, while surface mutations almost did not contribute to the stabilization~\cite{Koudelakova2013}.
 
@@ -152,7 +151,7 @@ The importance of tunnels can be demonstrated on the study where the mutations o
 Generally, the task of tunnel detection is to find a collision-free path leading from the active site to the protein surface. 
 The path is usually searched for a spherical probe of a given radius, which serves as the proxy geometry for a ligand~\cite{caver3,sehnal2013mole,kozlikova2014ca}.
 An example is depicted in Fig.~\ref{fig::motiv}.
-Early solutions focused on static molecules. 
+Early solutions focused solely on static molecules. 
 However, from a static snapshot it is hard to assess the biochemical relevance of the tunnel as it does not provide the information about its temporal stability. 
 
 Therefore, researchers have started to focus on molecular dynamics (MD) simulations to study the behavior of individual tunnels over time~\cite{yaffe2008,caver3,sehnal2013mole,jurcik2016accelerated}.
@@ -164,24 +163,24 @@ The existing solutions are based exclusively on Voronoi diagrams and they suffer
 First, to determine for the correspondence between tunnels in individual snapshots, these solutions employ various clustering methods, which are generally very time and memory consuming.
 This also limits the maximum number of frames which can be analyzed.
 In such cases, the biochemists have to select a subset of the whole simulation and perform the analysis only for this selection.
-Such analysis however gives only a rough idea of the tunnel behavior, as important parts of the simulation can be easily omitted.
+However, such analysis gives only a rough idea of the tunnel behavior, as important parts of the simulation can be easily omitted.
 
 Second, the basic parameter determining if a tunnel will be detected is the bottleneck radius, i.e., the size of the narrowest part of the tunnel. 
 This parameter is set to a specific value and even a slight decrease of the bottleneck radius below this threshold causes that the tunnel is not detected.
-In consequence, the tunnels detected within an MD simulation are not continuous -- there are snapshots where the given tunnel is completely missing and appears again after some time.
+In consequence, the tunnels detected within an MD simulation are not continuous -- there are snapshots where the given tunnel is completely missing and may appear again after some time.
 In fact this does not correspond to the real situation. 
-The tunnel void space does not disappear in these snapshots, it only does not connect the active site with the protein surface by a sufficiently wide path.
+The tunnel void space does not disappear completely in these snapshots, it only does not connect the active site with the protein surface by a sufficiently wide path.
 To be able to trace the void space also in these snapshots, we introduce so called {\it dynamic tunnel}.
 By this term we denote a void space between the protein active site and its surface, whose position and length is traced over time.
 The dynamic tunnel does not need to be connected with the active site or the surface all the time.
-By detecting these tunnel, users gain more information about the void space also in snapshots without traditional tunnels.
+By detecting these tunnel, the users gain more information about the void space also in snapshots without detected static tunnels.
 
 In our proposed solution to these problems, we utilize the algorithms from sampling-based motion planning.
 We have recently proposed a novel method for tunnel detection using sampling-based motion planning, namely using Rapidly Exploring Random Tree (RRT) algorithm~\cite{vonasek2017tunnel}.
 RRT builds a tree of collision-free configurations of a spherical probe moving inside the protein. 
 To consider the molecular dynamics, the tree is continuously pruned in each frame.
 In comparison with the existing approaches~\cite{Petrek20071357,petrek2006caver}, this RRT-based approach~\cite{vonasek2016application} 
-handles the dynamics without any need to cluster and match Voronoi diagrams between consecutive frames, which leads to faster and memory less demanding computation.
+handles the molecular dynamics without any need to cluster and match Voronoi diagrams between the consecutive frames, which leads to faster and memory less demanding computation.
 
 
 \begin{figure}[t]
@@ -206,9 +205,9 @@ Frame $i+2$ & Frame $i+3$ \\
 \end{tabular}
 }
 \caption{\label{fig::motiv}
-Example of static tunnel detection in DhaA haloalkane dehalogenase and the example of a dynamic tunnel that evolves through four consecutive frames.
-In the frame $i$, the active site (red sphere) is not fully connected with a protein surface, but only to an internal cavity.
-The cavity disconnects from the active site in the frame $i+1$ and remains disconnected also in the next frame $i+2$.
+The example of static tunnel detection in the DhaA haloalkane dehalogenase protein and the example of a dynamic tunnel that evolves through four consecutive frames.
+In the frame $i$, the active site (red sphere) is not fully connected with the protein surface, but only to the internal cavity.
+The cavity is disconnected from the active site in the frame $i+1$ and remains disconnected also in the next frame $i+2$.
 In the fourth frame $i+3$, the cavity connects with the protein surface.
 }
 \end{figure}
