@@ -21,7 +21,7 @@
 \SetKwInput{KwData}{Global params.}
 
 \title{
-    Sampling-based Motion Planning for Tracking Evolution of Dynamic Tunnels in Molecular Dynamics Simulations
+    Sampling-Based Motion Planning for Tracking Evolution of Dynamic Tunnels in Molecular Dynamics Simulations
 %   Tunnel detection in protein structures using sampling-based motion planning  % title from conference paper
 }
 
@@ -104,23 +104,22 @@ Czech Republic
 
 \begin{abstract}
 Proteins are involved in many biochemical processes.
-The behavior of proteins is highly influenced by the presence of internal void space, denoted as tunnels or cavities in literature.
+The behavior of proteins is highly influenced by the presence of internal void space, in literature denoted as tunnels or cavities.
 Tunnels are paths leading from an inner protein active site to its surface.
 The knowledge about tunnels and their evolution over time, captured in molecular dynamics simulations, provides an insight into important protein properties
-(e.g., stability or activity).
+(e.g., their stability or activity).
 For each individual snapshot of molecular dynamics, tunnels can be detected using Voronoi diagrams and then aggregated over time to trace their behavior.
 However, this approach is suitable only when a given tunnel is computed in all snapshots.
 This is often not the case of traditionally used approaches to tunnel computation.
 When a tunnel becomes too narrow in a particular snapshot, the existing approaches cannot detect this case and the tunnel completely disappears from the results.
 On the other hand, this situation can be quite common as tunnels can move, disappear and appear again, split, or merge.
 Therefore, in this paper we propose a method which enables to trace also tunnels in those missing snapshots.
-We call them dynamic tunnels and we use sampling-based motion planning to compute them.
-Rapidly Exploring Random Tree (RRT) algorithm is used to explore the void space in each frame of the protein dynamics.
+We call them dynamic tunnels and we use the sampling-based motion planning to compute them.
+The Rapidly Exploring Random Tree (RRT) algorithm is used to explore the void space in each frame of the protein dynamics.
 The void space is represented by a tree structure that is transferred to the next frame of the dynamics and updated to remove collisions and to cover newly emerged free regions of the void space.
-If the void space reaches the surface of the protein, a dynamic tunnel is reconstructed by tracking back in the tree towards a desired place (active site).
+If the void space reaches the surface of the protein, a dynamic tunnel is reconstructed by tracking back in the tree towards a desired place (i.e., the active site).
 To efficiently sample the narrow void space inside proteins, a Voronoi diagram of the static protein frames is used.
-The results of the proposed method are demonstrated on an exemplary dataset from the domain experts and compared to classic aggregation-based tunnel detection
-provided by the state-of-the-art tool CAVER 3.0.
+The results of the proposed method are demonstrated on an exemplary dataset obtained from the domain experts and the results are compared with the classic aggregation-based tunnel detection performed using the state-of-the-art CAVER 3.0 tool.
 \end{abstract}
 
 
