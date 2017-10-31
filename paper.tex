@@ -316,22 +316,21 @@ A more general approach is to define a guiding path in the workspace and sequent
 
 \section{Algorithm Overview}
 
-The proposed algorithm works as follows.
+Our proposed algorithm for the detection of dynamic tunnels works as follows.
 In each frame of the protein dynamics, first the void space is detected and represented by a set of spheres connected to a tree structure.
 To detect the void space, it is necessary to explore the internal parts of the protein and decide which of them are reachable from a given region (active site) or a set of regions (the void space from the previous frame).
 This leads to the incremental exploration of the void space, which can be realized using the RRT principle.
 
-After a void space is detected in a given frame, it is transferred to the next frame and pruned in order to remove collisions with the atoms in the next frame.
+After the void space is detected in a given frame, it is transferred to the next frame and pruned in order to remove collisions with the atoms in the next frame.
 During the void space detection, the exit points from the void space to the surface of the protein are detected.
 The existence of the exit points indicates the end of either a static or a dynamic tunnel.
 If the exit point can be connected with the active site in the given frame, the static tunnel can be reconstructed.
-This corresponds to the tunnel detected by traditional methods.
+This corresponds to the tunnel detected by the traditional methods.
 Otherwise, the detected void space is searched back in time to reconstruct our newly proposed dynamic tunnel.
 
-The work presented in this paper is the extension of our previous work~\cite{vonasek2017tunnel}, which proposed to guide the search
-of the configuration space using the Voronoi vertices of the Voronoi-based protein representation.
+The work presented in this paper is the extension of our previous work~\cite{vonasek2017tunnel}, which proposed to guide the search of the configuration space using the Voronoi vertices of the Voronoi-based protein representation.
 Our goal was to detect static tunnels in proteins.
-In this work, we focus on the detection of dynamic tunnels and their visual representation enabling the domain experts to further analyse the evolution and behavior of the protein void space.
+In this work, we focus on the detection of dynamic tunnels and their visual representation enabling the domain experts to further analyze the evolution and behavior of the protein void space.
 
 \section{Used Notation}
 
@@ -342,20 +341,16 @@ The void space is detected using the spherical probe of radius $\probe$.
 All possible configurations $q=(x,y,z)$ (positions) of the probe in the $i$-th frame form the configuration space $\C^i$.
 The probe is represented by a sphere $\Sprobe(q) \subset \R^3$ at a configuration $q$.
 The void space (the collision-free region) $\CF^i \subseteq \C^i$ is formed by configurations, where $\Sprobe$ can be placed without any collision with atoms, i.e.,  $\CF^i = \{q \in \C^i | \Sprobe(q) \cap \SS^i = \emptyset\}$.
-For each configuration $q\in\C^i$ we assume that its largest collision-free radius $r(q) \in \mathbf{R}, r(q)\ge 0$ can be computed, e.g., 
-using collision detection.
-The outer space  $\CG^i \subset \CF^i$ of the protein is defined by configurations, where a large sphere can be placed without any collision,
-i.e., $\CG^i=\{q\in \C^i| \Sgprobe(q) \cap \SS^i = \emptyset \}$ where $\Sgprobe$ is the sphere of radius $\gprobe > \probe$ 
-placed at the configuration $q$.
+For each configuration $q\in\C^i$ we assume that its largest collision-free radius $r(q) \in \mathbf{R}, r(q)\ge 0$ can be computed, e.g., using collision detection.
+The outer space  $\CG^i \subset \CF^i$ of the protein is defined by configurations, where a large sphere can be placed without any collision, i.e., $\CG^i=\{q\in \C^i| \Sgprobe(q) \cap \SS^i = \emptyset \}$ where $\Sgprobe$ is the sphere of radius $\gprobe > \probe$ placed at the configuration $q$.
 The exit points, where the tunnels leave the protein, are located in $\CG^i$.
-To determine whether two configurations $q_1, q_2 \in \CF^i$ can be connected, a line segment from $q_1$ to $q_2$ is constructed
-and discretized to several points, using $\varepsilon$ discretization step, and the collision detection is performed at all the points.
+To determine whether two configurations $q_1, q_2 \in \CF^i$ can be connected, a line segment from $q_1$ to $q_2$ is constructed and discretized to several points, using $\varepsilon$ discretization step, and the collision detection is performed at all the points.
 The two configurations can be connected if all intermediate points on the line are collision-free. 
-The 3D Euclidean metric is used to measure distances in the configuration space.
+The 3D Euclidean metric is used to measure the distances in the configuration space.
 
 The main purpose of the tunnel detection is the identification of tunnels, either static or dynamic, that connect the active site with the protein surface.
 We assume that the position (configuration) of the active site $\qinit \in \CF^i$ in each snapshot is known in advance or it is known that the probe cannot be placed at the active site.
-A static tunnel is a collision-free path leading from $\qinit \in \CF^i$ to an exit point $q \in \CG^i$, i.e., both active site and the exit point are located in the same frame $i$.
+A static tunnel is a collision-free path leading from $\qinit \in \CF^i$ to an exit point $q \in \CG^i$, i.e., both the active site and the exit point are located in the same frame $i$.
 A dynamic tunnel is a collision-free path leading from $\qinit \in \CF^i$ to an exit point $q \in \CG^j$, $j>i$, i.e., the active size and the exit point are located in different frames.
 
 The approximated WVD diagram of the atoms is computed by representing each atom using 12 balls of equal radii and computing the ordinary Voronoi diagram.
@@ -370,10 +365,10 @@ Let $\SSA^i \subset \SS^i$ denote a set of spheres representing these atoms in s
 
 To detect the void space, the collision-free region $\CF^i$ of the $i$-th frame is searched and represented as a tree structure of the collision-free configurations.
 The detection starts from a given active site $\qinit \in \CF^i$ or from a set of already detected collision-free positions of the probe.
-The second case is a result of the void space detection in the previous frame of the molecular dynamics.
+The second case is the result of the void space detection in the previous frame of the molecular dynamics.
 To maintain the connectivity between the void space from the previous frame and the newly discovered one (i.e., from $\CF^i$ to $\CF^{i+1}$, the void space has to be explored incrementally without adding non-reachable regions, such as cavities.
 Due to this reason, the void space cannot be automatically initialized using all Voronoi vertices $\VV^i$, though they are collision-free at the radius $\probe$, because the Voronoi vertices can be also placed in the cavities.
-The required incremental detection of the void space can be achieved by the exploration principle of the RRT planner, as RRT incrementally extends a tree of collision-free configurations.
+The required incremental detection of the void space can be achieved by the exploration principle of the RRT planner, as RRT incrementally extends the tree of collision-free configurations.
 The main loop of the algorithm for the void space detection is listed in Alg.~\ref{alg::main}. 
 
 We propose three modifications of the RRT for the purpose of void space detection.
@@ -389,7 +384,7 @@ These three modifications are described in detail in the following subsections.
 %\setstretch{\straa}
 {\small
 \caption{\label{alg::main}voidSpaceDetection}
-\KwIn{Initial configuration tree $\T$,
+\KwIn{initial configuration tree $\T$,
     initial set of blocking spheres $\SB'$,
     position of active site $\qinit\in\CF^i$,
 }
@@ -399,7 +394,7 @@ These three modifications are described in detail in the following subsections.
     phase--switching parameter~$\alpha$,
     prob. $\gb$~of sampling randomly from~$\C^i$,
 }
-\KwOut{Configuration tree $\T$,
+\KwOut{configuration tree $\T$,
     list of tunnel exit-points $P$
 }
 \hrule
