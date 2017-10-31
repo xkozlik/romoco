@@ -919,7 +919,7 @@ After $n$ frames are processed, the algorithm results in $n$ configuration trees
 \KwIn{
     starting point $\qinit \in \CF$ in the first frame
 }
-\KwOut{list of configuration trees $\T_i$\;
+\KwOut{list of configuration trees $\T_i$, list of exit points $P$, graph of components $G$
 }
 \hrule
 $\T_0$.add($\qinit)$\;
@@ -928,11 +928,12 @@ $G = $ empty graph\;
 \For{$i  = 1 : n$}{
     $(\T_i, \SB)$ = treeTransfer($T_{i-1}, \CF^i$); // Alg.~\ref{alg::transfer}\\
     $(\T_i, P')$ = voidSpaceDetection($\T_{i},\SB)$; //Alg.~\ref{alg::main}\\
-    $(V,E) =$ voidSpaceMerging($\T_{i}$); // V,E is a graph of merged void space
-    $C$ = find components in the graph (V,E)\;
-    add components $C$ to graph $G$
-    connect exit points $P'$ with their components in $G$\;
-    connect active site $\qinit^i$ with its component in $G$\;
+    $P = P \cup P'$\;
+    $(V,E) =$ voidSpaceMerging($\T_{i}$); // V,E is a graph of merged void space  \\
+    $C$ = find components in the graph (V,E)\; 
+    add components $C$ to graph $G$ as nodes\;
+    connect exit points $P'$ with their components (nodes) in $G$\;
+    connect active site $\qinit \in \CF^i$ with its component (node) in $G$\;
 }
 }
 \end{algorithm}
@@ -945,10 +946,14 @@ After the void space is detected in all frames by Alg.~\ref{alg::dynamic}, the t
 The nodes in this graph are the components of the void space in each frame, the directed edges connect the components from the frame $i$ with the previous frame $i-1$ and the undirected edges connect the exit points and the active sites to their components.
 
 One tunnel is defined by an exit point and by an active site.
-If both these nodes are connected to the same component of the graph, they define a static tunnel.
-Such a tunnel can be reconstructed simply by finding a path between these two nodes in the graph.
-If there does not exist any path between the exit point $p \in P^i$ (exit point at frame $i$) and the active site $\qinit^i$ in the same frame, the dynamic tunnel has to start from a different active site (in one of the previous frames).
-A path from $p$ to the first active site reachable in the graph (measured by the number of edges) describes the dynamic tunnel.
+A static tunnels is contained completely in one frame, therefore the path from $p \in P^i$ to $\qinit \in \CF^i$ in the graph
+$G$ describes it.
+Dynamic tunnels have active site and exit point in different frame, so to reconsruct them,
+a path from $p \in P^i$ the first reachable $\qinit \in \CF^j, j < i$ has to be searched in the grapg $G$.
+%If both these nodes are connected to the same component of the graph, they define a static tunnel.
+%Such a tunnel can be reconstructed by finding a path between these two nodes in the graph.
+%If there does not exist any path between the exit point $p \in P^i$ (exit point at frame $i$) and the active site $\qinit^i$ in the same frame, the dynamic tunnel has to start from a different active site (in one of the previous frames).
+%A path from $p$ to the first active site reachable in the graph (measured by the number of edges) describes the dynamic tunnel.
 An example is depicted in Fig.~\ref{fig::components}.
 
 There are two possible reasons why the active site of the same frame cannot be reached.
@@ -1132,12 +1137,12 @@ The active site appears again inside the void space in frame 702.
 
 \begin{table}
 \centering
-\caption{\label{tab::dyn} The number of frames with detected dynamic tunnels. The number of frames
-    with static tunnels, detected by CAVER 3.0.
+\caption{\label{tab::dyn} The number of frames with detected dynamic tunnels. 
+    %The number of frames with static tunnels, detected by CAVER 3.0.
 }
 \begin{tabular}{ccccc}
 \toprule
-  \multirow{2}{*}{ Dynamic tunnel}   &  \multicolumn{2}{c}{ Static tunnels}   \\
+  \multirow{2}{*}{ Proposed method}   &  \multicolumn{2}{c}{ Static tunnels}   \\
                                      &  {\bf Exists} & {\bf Not exists} \\
 \midrule                                     
 {\bf End of tunnel/cavity}           & 1,324/661 & 1,027/725  \\
