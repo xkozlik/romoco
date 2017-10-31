@@ -930,12 +930,12 @@ $P = \emptyset$; // list of all exit points \\
 $G = $ empty graph\;
 \For{$i  = 1 : n$}{
     $(\T_i, \SB)$ = treeTransfer($T_{i-1}, \CF^i$); // Alg.~\ref{alg::transfer}\\
-    $(\T_i, P')$ = voidSpaceDetection($\T_{i},\SB)$; //Alg.~\ref{alg::main}\\
-    $P=P \cup P'$\;
+    $(\T_i, P^i)$ = voidSpaceDetection($\T_{i},\SB)$; //Alg.~\ref{alg::main}\\
+    $P=P \cup P^i$\;
     $(V,E) =$ voidSpaceMerging($\T_{i}$); // V,E is a graph of merged void space \\
     $C$ = find components in the graph (V,E)\;
     add components $C$ as nodes to graph $G$ \\
-    connect exit points $P'$ with their components (nodes) in $G$\;
+    connect exit points $P^i$ with their components (nodes) in $G$\;
     connect active site $\qinit \in \CF^i$ with its component (node) in $G$\;
 }
 }
@@ -949,9 +949,9 @@ After the void space is detected in all frames by Alg.~\ref{alg::dynamic}, the t
 The nodes in this graph are the components of the void space in each frame, the directed edges connect the components from the frame $i$ with the previous frame $i-1$ and the undirected edges connect the exit points and the active sites to their components.
 
 One tunnel is defined by the exit point and by the active site.
-If both these nodes are connected to the same component of the graph, they define a static tunnel.
-Such a tunnel can be reconstructed by finding a path between these two nodes in the graph.
-If there does not exist any path between the exit point $p \in P^i$ (the exit point at frame $i$) and the active site $\qinit \in \CF^i$ in the same frame, the dynamic tunnel has to start from a different active site (in one of the previous frames).
+If both the active site $\qinit\in\CF^i$ and the exit point $p \in P^i$ are connected to the same component, a static
+tunnel is described by a path from $p$ to the active site.
+Otherwise, the dynamic tunnel has to be reconstructed.
 A path from $p \in P^i$ to the first active site $\qinit\in\CF^j, j < i$ reachable in the graph (measured by the number of edges) describes the dynamic tunnel.
 An example is depicted in Fig.~\ref{fig::components}.
 
@@ -1186,7 +1186,7 @@ Such time is still negligible in comparison with the preparation of the molecula
 %Times: 8000 frames, cca 35 hodin = cca 15s/frame. Caver na mem ntb: cca 11s/frame.
 
 The examples of frames without a static tunnel, but with a dynamic one, are depicted in Fig.~\ref{fig::seq1}.
-A static tunnel as well as a dynamic one was detected in 1324 frames.
+A static tunnel as well as a dynamic one was detected in 1,324 frames.
 These results bring new information about the protein, as they show, that a pathway to the active site exists more
 frequently than is described by the classic static tunnels.
 
@@ -1281,16 +1281,14 @@ It is visible that our method is able to extract many additional information abo
 
 The static tunnels computed by the CAVER tool were discovered in 5,140 frames leaving the rest of 2,860 (i.e., 35~\%) 
 frames without any further analysis.
-Our proposed method was able to further detect dynamic tunnels in other 1,027 frames.
-
-
 The number of static tunnels decreases with the increasing probe size. 
 In order to increase the number of frames with detected static tunnels, the biochemists usually analyze the tunnel with a smaller probe size, e.g., 1~\AA\ or even 0.9~\AA.
 This leads to the detection of more tunnels, but on the other hand, their bottleneck may be too narrow for the passage of certain ligands.
-In the described experiment, we analyzed the proteins with a very large probe size (1.4~\AA).
+In the described experiment, we analyzed the proteins with a probe of size 1.4~\AA\ and we have discovered existence of dynamic tunnels in 1,027 frames, that would be discarded when analyzing using static tunnels only.
 
 The void space detection is based on the principle of RRT which makes the tunnel detection non-deterministic.
-This brings two effects. The static tunnels can be incorrectly classified as dynamic tunnels, and the length/position/bottleneck of the reported tunnels may vary between various runs.
+This brings two effects. 
+The static tunnels can be incorrectly classified as dynamic tunnels, and the length/position/bottleneck of the reported tunnels may vary between various runs.
 The cause of the former case is that the growth of the tree is blocked, which slows down the reaching of the outer space and consequently any exit points are detected.
 To minimize this effect, the dynamic tunnel should be detected primarily on those frames, where any static tunnel does not exist.
 
