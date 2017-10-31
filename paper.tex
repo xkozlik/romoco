@@ -173,7 +173,7 @@ The tunnel void space does not disappear completely in these snapshots, it only 
 To be able to trace the void space also in these snapshots, we introduce so called {\it dynamic tunnel}.
 By this term we denote a void space between the protein active site and its surface, whose position and length is traced over time.
 The dynamic tunnel does not need to be connected with the active site or the surface all the time.
-By detecting these tunnel, the users gain more information about the void space also in snapshots without detected static tunnels.
+By detecting these tunnels, the users gain more information about the void space also in snapshots without detected static tunnels.
 
 In our proposed solution to these problems, we utilize the algorithms from sampling-based motion planning.
 We have recently proposed a novel method for tunnel detection using sampling-based motion planning, namely using Rapidly Exploring Random Tree (RRT) algorithm~\cite{vonasek2017tunnel}.
@@ -1077,7 +1077,7 @@ one static tunnel was detected).
 The goal region of the protein was defined in the same way as for the static tunnel detection, i.e., $\gprobe=4$~\AA\ and 
 the surface atoms were detected using the $\alpha$-shape with the same radius.
 
-In each frame, the void space detection (Alg.~\ref{alg::main}) was performed with $\Imax=1200$ iterations.
+In each frame, the void space detection (Alg.~\ref{alg::main}) was performed with $\Imax=1,200$ iterations.
 The second phase of the search was switched after $\alpha=70$~\% of the iterations (i.e., after 840 iterations).
 Other parameters and their values used for the computation were $m=8$, $\da=5$~\AA, $\db=0.5$~\AA, $\gb=0.1$, and $\dts=2$~\AA.
 
@@ -1133,12 +1133,11 @@ The active site appears again inside the void space in frame 702.
 
 \begin{table}
 \centering
-\caption{\label{tab::dyn} The number of frames with detected dynamic tunnels. The number of frames
-    with static tunnels, detected by CAVER 3.0.
+\caption{\label{tab::dyn} The number of frames with detected dynamic tunnels. 
 }
 \begin{tabular}{ccccc}
 \toprule
-  \multirow{2}{*}{ Dynamic tunnel}   &  \multicolumn{2}{c}{ Static tunnels}   \\
+  \multirow{2}{*}{ Proposed algorithm}   &  \multicolumn{2}{c}{ Static tunnels}   \\
                                      &  {\bf Exists} & {\bf Not exists} \\
 \midrule                                     
 {\bf End of tunnel/cavity}           & 1,324/661 & 1,027/725  \\
