@@ -999,51 +999,48 @@ This dynamic tunnel evolves from $A_1$ of frame $i$ to exit point $P_2$ in the f
 \subsection{Implementation Details}
 
 The proposed algorithm relies on two main techniques: the collision detection and the nearest-neighbor search.
-Fast collision detection can be generally realized using hierarchical data structures like AABB or OBB trees~\cite{ericsonRTCD}.
+Fast collision detection can be generally realized using hierarchical data structures, like AABB or OBB trees~\cite{ericsonRTCD}.
 The BioCD collision detection is ~\cite{angulo2005biocd} is dedicated for protein structures.
-The nearest-neighbor search can be realized fast using KD-trees. 
-The new nodes added to the configuration tree has to be also added to the KD-tree structure, so the KD-tree should support
-fast insert operation. 
+The nearest-neighbor search can be realized rapidly using KD-trees. 
+The new nodes added to the configuration tree has to be also added to the KD-tree structure, so the KD-tree should support fast insert operation. 
 MPNN~\cite{yershovaMPNN} was designed for the purpose of sampling-based motion planning and it is used also in our implementation.
 
-The void space detection depends on several parameters like the number of iterations $\Imax$, the number of
-samples in the expansion step $m$, and the parameters $\da$ and $\db$ controlling the selection of active Voronoi vertices.
+The void space detection depends on several parameters, such as the number of iterations $\Imax$, the number of samples in the expansion step $m$, and the parameters $\da$ and $\db$ controlling the selection of active Voronoi vertices.
 Increasing $\Imax$ and $m$ generally allows us to construct larger configuration trees.
 The growth of the tree inside the proteins is limited not only by the atoms, but also by the blocking spheres.
 Moreover, the regression test performed before adding a new sample to the tree ensures that the tree does not grow towards its own nodes.
 If the tree already fills the void space, the expansion will not add new nodes and therefore, using too high values of $\Imax$ 
 does not make sense.
 
-Protein structures vary in the number of atoms, roughness of their surface, size of the internal cavities etc. 
-Therefore, there is no universal setting of these parameters and they have to be adjusted considering a given protein.
-This is similar to the preparation of VD-based tunnel detection, where several parameters  also have to be specified for the given protein.
-The authors' best practices is to test several setting of the parameters and judge them using visual inspection on several frames.
+Protein structures vary in the number of atoms, the roughness of their surface, the size of their internal cavities, etc. 
+Therefore, there is no universal settings of these parameters and they have to be adjusted according to a given protein.
+This is similar to the preparation of VD-based tunnel detection, where several parameters also have to be specified for the given protein.
+The authors' best practices is to test several settings of the parameters and judge them using the visual inspection on several frames.
 The number of iterations $\Imax$ has to allow the tree to fill the internal void space and (in combination with the length of the second phase of the method), it should allow to detect the exit points.
-A simple test to find a good $\Imax$ is to increase it incrementally, detect static tunnels in a single frame and count the number of unique tunnels.
-After a certain value of $\Imax$, the number of unique tunnels does not increase and it does not make sense to use higher value.
+A simple test to find a good $\Imax$ is to increase it incrementally, detect static tunnels in a single frame, and count the number of unique tunnels.
+After a certain value of $\Imax$, the number of unique tunnels does not increase and it does not make sense to use a higher value anymore.
 
 
-In comparison to classic RRT, which adds only one node to the tree per iteration, the proposed method can expand the tree by up to $m+1$ nodes.
+In comparison with the classic RRT, which adds only one node to the tree per iteration, the proposed method can expand the tree by up to $m+1$ nodes.
 Consequently, the number of collision detection queries is $m$ times higher in each iteration.
-The nearest-neighbor search is used more times, than in classic RRT, because  the nearest-neighbor search is used to update the active Voronoi vertices.
+The nearest-neighbor search is used more times than in the classic RRT, because the nearest-neighbor search is used to update the active Voronoi vertices.
 The complexity of the update of the active Voronoi vertices is $\mathcal{O}(|\VV^i|\log(|\T|))$, where $|\T|$ is the number of nodes in the tree, assuming that the nearest neighbor search is realized using KD-trees.
-For the sake of simplicity, we update $\VVA^i$ in each step in the pseudocode (Alg.~\ref{alg::main}), but practically, it is not necessary.
-The tree expands incrementally, and usually it takes many iterations before most of the active Voronoi vertices are reached by the tree.
+For sake of simplicity, we update $\VVA^i$ in each step in the pseudocode (Alg.~\ref{alg::main}), but practically it is not necessary.
+The tree expands incrementally, and usually it takes many iterations before the most of the active Voronoi vertices are reached by the tree.
 It is therefore possible to update these vertices, e.g., in every $n$-th iteration. 
 
-The other usage of nearest neighbor-search is to compute the distance to surface atoms (Alg.~\ref{alg::expand}, line~\ref{alg::expand::surf}).
+The other usage of the nearest neighbor-search is to compute the distance to the surface atoms (Alg.~\ref{alg::expand}, line~\ref{alg::expand::surf}).
 The complexity of this step is $\mathcal{O}(\log( |\SSA|)$, where $|\SSA|$ is the number of the surface atoms.
-The number of the surface atoms depends on the number of atoms in the protein as well as the radius $\gprobe$, that is used to detect the surface atoms.
-For a protein with $\sim 5000$ atoms and $\gprobe=4$~\AA, the number of surface atoms is $\sim800$, and therefore the checking
-of proximity to surface atoms using KD-trees is negligible. 
+The number of the surface atoms depends on the number of atoms in the protein as well as on the radius $\gprobe$, that is used to detect the surface atoms.
+For a protein with $\sim 5000$ atoms and $\gprobe=4$~\AA, the number of surface atoms is $\sim800$, and therefore the checking of the proximity to the surface atoms using KD-trees is negligible. 
 An example of the surface atoms is depicted in Fig.~\ref{fig::surface}.
 
 Each frame can be processed separately and it is not necessary to hold all the data structures from all previous frames in memory.
-This is valid for all data structures like nearest-neighbor search, collision detection and the configuration tree.
-The only exception is the tree pruning (Alg.~\ref{alg::transfer}), where both the tree from the previous frame and the new tree has to be stored in the memory.
+This is valid for all data structures, like nearest-neighbor search, collision detection, and the configuration tree.
+The only exception is the tree pruning (Alg.~\ref{alg::transfer}), where both the tree from the previous frame and the new tree have to be stored in the memory.
 After the tree is transferred to the next frame, the old tree does not need to be stored in the memory.
 The reconstruction of the tunnels requires to search graph of the components. 
-As each frame results in few (or maximally tens) of components, hence searching this graph also does not have high memory requirements.
+As each frame results in few (or maximally tens) of components, the searching of this graph also does not have high memory requirements.
 
 
 \begin{figure}
