@@ -751,7 +751,7 @@ detected      & tree transfer   & void space      & tree transfer    & void spac
 void space    & (splitting)      & detection       &  (splitting)     &  detection      & \\              
 \end{tabular}
 \caption{\label{fig::merging}
-An example of merging.
+An example of void space merging and splitting.
 The tree in the first frame with a denoted motion of one of the atoms (a). 
 A path exists between the nodes $A$ and $B$.
 The moving atom in the second frame causes splitting of the detected void space to three components (b).
@@ -1082,7 +1082,7 @@ one static tunnel was detected).
 The goal region of the protein was defined in the same way as for the static tunnel detection, i.e., $\gprobe=4$~\AA\ and 
 the surface atoms were detected using the $\alpha$-shape with the same radius.
 
-In each frame, the void space detection (Alg.~\ref{alg::main}) was performed with $\Imax=1200$ iterations.
+In each frame, the void space detection (Alg.~\ref{alg::main}) was performed with $\Imax=1,200$ iterations.
 The second phase of the search was switched after $\alpha=70$~\% of the iterations (i.e., after 840 iterations).
 Other parameters and their values used for the computation were $m=8$, $\da=5$~\AA, $\db=0.5$~\AA, $\gb=0.1$, and $\dts=2$~\AA.
 
@@ -1280,7 +1280,7 @@ Our proposed method was able to further detect dynamic tunnels in other 1,027 fr
 
 
 The number of static tunnels decreases with the increasing probe size. 
-In order to increase the number of frames with detected static tunnels, the biochemists usually analyze the tunnel with a smaller probe size, e.g., 1~\AA or even 0.9~\AA.
+In order to increase the number of frames with detected static tunnels, the biochemists usually analyze the tunnel with a smaller probe size, e.g., 1~\AA\ or even 0.9~\AA.
 This leads to the detection of more tunnels, but on the other hand, their bottleneck may be too narrow for the passage of certain ligands.
 In the described experiment, we analyzed the proteins with a very large probe size (1.4~\AA).
 
