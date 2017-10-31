@@ -770,7 +770,7 @@ The result of the merging process is again the existing path between $A$ and $B$
 
 The transfer of the tree to the next frame of molecular dynamics is listed in Alg.~\ref{alg::transfer}.
 The collisions between the nodes of the actual tree and the atoms in the next frame are checked and the colliding nodes are removed.
-It is also necessary to remove the nodes outside the protein (these nodes are added in the second phase of the void space detection in order to find exit points).
+It is also necessary to remove the nodes outside the protein (these nodes are added in the second phase of the void space detection in order to find the exit points).
 The nodes that are collision-free at radius $\gprobe$ are therefore removed as well.
 Example of the removing of these nodes is depicted in Fig.~\ref{fig::tp2}.
 
@@ -833,14 +833,13 @@ model in the right image).
 
 After the tree pruning (Alg.~\ref{alg::transfer}), the parents of the surviving nodes point to the previous frame and the edges connecting the nodes are omitted.
 The merging is realized by finding nodes in the tree that can be connected by a collision-free line.
-For each node $q$ of the tree, the $k$-nearest neighbors are found and the possibility of their connection is evaluated using collision
-detection on the line between them.
+For each node $q$ of the tree, the $k$-nearest neighbors are found and the possibility of their connection is evaluated using collision detection on the line between them.
 The pseudocode of the void-space merging is listed in Alg.~\ref{alg::component}.
 
 The merging results in a graph structure with two types of edges: the edges connecting the nodes within the same frame, and the edges (parent links) connecting some of the nodes with the nodes of the tree from the previous frame.
 By computing the components of this graph considering only the first type of edges, we can determine the regions of the void space inside whose the probe can move without any collisions.
 The connection of these components to the previous frame is kept in the parent nodes.
-This allows us to define a graph $G$ of vod space evolution.
+This allows us to define a graph $G$ of void space evolution.
 The example of this graph is depicted in Fig.~\ref{fig::transfer}.
 
 \begin{algorithm}
@@ -891,14 +890,13 @@ void space & pruning & after pruning & void space  & merging \\
 \end{tabular}
 }
 \caption{\label{fig::transfer}
-Tree transfer, merging and graph of relations.
+Tree transfer, merging, and the graph of relations.
 In the frame $i$, the void space consists of one component $C_0$ (nodes 1--7).
 After the pruning, the nodes leading to collisions with atoms are removed (nodes $5,6$).
-The parents of the remaining nodes are set to the same nodes in the previous frame, e.g., parent of node 3 in frame $i+1$ is the node 3 in the frame $i$.
+The parents of the remaining nodes are set to the same nodes in the previous frame, e.g., the parent of node 3 in frame $i+1$ is the node 3 in the frame $i$.
 The tree is then again expanded in the new frame (green nodes).
 After merging, two components can be identified ($C_1$ and $C_2$). 
-Since some of the nodes of these components point to the previous frame (the red nodes),
-      both components $C_1$ and $C_2$ are connected to $C_0$.
+Since some of the nodes of these components point to the previous frame (red nodes), both components $C_1$ and $C_2$ are connected to $C_0$.
 }
 \end{figure}
 
@@ -949,10 +947,10 @@ $G = $ empty graph\;
 After the void space is detected in all frames by Alg.~\ref{alg::dynamic}, the tunnels can be identified using the graph $G$ describing the evolution of the void space.
 The nodes in this graph are the components of the void space in each frame, the directed edges connect the components from the frame $i$ with the previous frame $i-1$ and the undirected edges connect the exit points and the active sites to their components.
 
-One tunnel is defined by an exit point and by an active site.
+One tunnel is defined by the exit point and by the active site.
 If both these nodes are connected to the same component of the graph, they define a static tunnel.
 Such a tunnel can be reconstructed simply by finding a path between these two nodes in the graph.
-If there does not exist any path between the exit point $p \in P^i$ (exit point at frame $i$) and the active site $\qinit^i$ in the same frame, the dynamic tunnel has to start from a different active site (in one of the previous frames).
+If there does not exist any path between the exit point $p \in P^i$ (the exit point at frame $i$) and the active site $\qinit^i$ in the same frame, the dynamic tunnel has to start from a different active site (in one of the previous frames).
 A path from $p$ to the first active site reachable in the graph (measured by the number of edges) describes the dynamic tunnel.
 An example is depicted in Fig.~\ref{fig::components}.
 
