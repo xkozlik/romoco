@@ -373,7 +373,7 @@ Let $\SSA^i \subset \SS^i$ denote a set of spheres representing these atoms in s
 To detect the void space, the collision-free region $\CF^i$ of the $i$-th frame is searched and represented as a tree structure of the collision-free configurations.
 The detection starts from a given active site $\qinit \in \CF^i$ or from a set of already detected collision-free positions of the probe.
 The second case is a result of the void space detection in the previous frame of the molecular dynamics.
-To maintain the connectivity between the void space from the previous frame and the newly discovered one (i.e., from $\CF^i$ to $\CF^{i+1}$, the void space has to be explored incrementally without adding non-reachable regions, such as cavities.
+To maintain the connectivity between the void space from the previous frame and the newly discovered one (i.e., from $\CF^i$ to $\CF^{i+1}$), the void space has to be explored incrementally without adding non-reachable regions, such as cavities.
 Due to this reason, the void space cannot be automatically initialized using all Voronoi vertices $\VV^i$, though they are collision-free at the radius $\probe$, because the Voronoi vertices can be also placed in the cavities.
 The required incremental detection of the void space can be achieved by the exploration principle of the RRT planner, as RRT incrementally extends a tree of collision-free configurations.
 The main loop of the algorithm for the void space detection is listed in Alg.~\ref{alg::main}. 
