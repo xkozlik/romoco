@@ -447,7 +447,7 @@ The exit points are configurations from $\CG^i$, i.e., they are collision-free a
 The detection of the exit points requires that the tree exits the protein.
 A premature exit from the protein may lead to quick filling of the outer part of the protein and eventually even to entering the protein from outside. 
 Such an exploration would lead to the detection of a smaller number of tunnels.
-An example as depicted in Fig.~\ref{fig::blocking1}.
+The example is depicted in Fig.~\ref{fig::blocking1}.
 
 To ensure that the tree explores primarily the internal void space while allowing its growth outside the protein for the purpose of exit point detection, the algorithm is divided into two phases.
 In the first phase, the growth of the tree outside the protein is blocked using a set of {\sl blocking spheres} $\SB$.
@@ -480,7 +480,7 @@ a & b & c & d \\
     The initial configuration $\qinit$ (active site) is represented by the black circle.
     The tree starts to grow inside the protein (a) but it can grow outside as well (b).
     In region denoted by A, the tree grows back to the protein (c).
-    Finally, two tunnels are detected (with the exit points $P_1$ and $P_2$), but no tunnel is found in the region $A$ (d).
+    Finally, two tunnels are detected (with the exit points $P_1$ and $P_2$), but any tunnel is found in the region $A$ (d).
 }
 \end{figure}
 
@@ -511,6 +511,7 @@ to detect exit points (d).
 Figures e--h depict four detected tunnels.
 }
 \end{figure}
+
 
 \subsection{Voronoi-Based Guided Sampling}
 \label{sec::vbg}
@@ -1257,8 +1258,13 @@ Visualization showing the results of the dynamic tunnel detection performed on t
 
 \begin{figure}
 \centering
-\includegraphics[width=0.8\textwidth]{fig/caver3450-3700}
-\caption{\label{fig::caver34} {\textcolor{red}{TODO}}
+\includegraphics[width=0.9\textwidth]{fig/caver3450-3700_colored}
+\caption{\label{fig::caver34}
+Visualization of tunnels detected using our method (RRT) in comparison to tunnels detected by CAVER.
+Both static tunnels detected by CAVER and by our method are depicted in gray.
+Then, colored bars show snapshots where a dynamic tunnel was detected by our algorithm.
+The dynamic tunnel bars are colored according to the order in which a snapshot occurs in the dynamic tunnel.
+It is visible that our method is able to extract many additional information about the void space than traditional static tunnels computed by CAVER.
 }
 \end{figure}
 
