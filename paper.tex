@@ -952,7 +952,7 @@ One tunnel is defined by the exit point and by the active site.
 If both these nodes are connected to the same component of the graph, they define a static tunnel.
 Such a tunnel can be reconstructed by finding a path between these two nodes in the graph.
 If there does not exist any path between the exit point $p \in P^i$ (the exit point at frame $i$) and the active site $\qinit \in \CF^i$ in the same frame, the dynamic tunnel has to start from a different active site (in one of the previous frames).
-A path from $p \in P^i$ to the first active site $\qinit\in\CF^i$ reachable in the graph (measured by the number of edges) describes the dynamic tunnel.
+A path from $p \in P^i$ to the first active site $\qinit\in\CF^j, j < i$ reachable in the graph (measured by the number of edges) describes the dynamic tunnel.
 An example is depicted in Fig.~\ref{fig::components}.
 
 %There are two possible reasons why the active site of the same frame cannot be reached.
