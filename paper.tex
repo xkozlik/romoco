@@ -373,7 +373,7 @@ Let $\SSA^i \subset \SS^i$ denote a set of spheres representing these atoms in s
 To detect the void space, the collision-free region $\CF^i$ of the $i$-th frame is searched and represented as a tree structure of the collision-free configurations.
 The detection starts from a given active site $\qinit \in \CF^i$ or from a set of already detected collision-free positions of the probe.
 The second case is a result of the void space detection in the previous frame of the molecular dynamics.
-To maintain the connectivity between the void space from the previous frame and the newly discovered one (i.e., from $\CF^i$ to $\CF^{i+1}$, the void space has to be explored incrementally without adding non-reachable regions, such as cavities.
+To maintain the connectivity between the void space from the previous frame and the newly discovered one (i.e., from $\CF^i$ to $\CF^{i+1}$), the void space has to be explored incrementally without adding non-reachable regions, such as cavities.
 Due to this reason, the void space cannot be automatically initialized using all Voronoi vertices $\VV^i$, though they are collision-free at the radius $\probe$, because the Voronoi vertices can be also placed in the cavities.
 The required incremental detection of the void space can be achieved by the exploration principle of the RRT planner, as RRT incrementally extends a tree of collision-free configurations.
 The main loop of the algorithm for the void space detection is listed in Alg.~\ref{alg::main}. 
@@ -922,7 +922,7 @@ After $n$ frames are processed, the algorithm results in $n$ configuration trees
 \KwIn{
     starting point $\qinit \in \CF$ in the first frame
 }
-\KwOut{list of configuration trees $\T_i$\;
+\KwOut{list of configuration trees $\T_i$, list of exit points $P$, graph $G$ 
 }
 \hrule
 $\T_0$.add($\qinit)$\;
@@ -931,11 +931,12 @@ $G = $ empty graph\;
 \For{$i  = 1 : n$}{
     $(\T_i, \SB)$ = treeTransfer($T_{i-1}, \CF^i$); // Alg.~\ref{alg::transfer}\\
     $(\T_i, P')$ = voidSpaceDetection($\T_{i},\SB)$; //Alg.~\ref{alg::main}\\
-    $(V,E) =$ voidSpaceMerging($\T_{i}$); // V,E is a graph of merged void space
+    $P=P \cup P'$\;
+    $(V,E) =$ voidSpaceMerging($\T_{i}$); // V,E is a graph of merged void space \\
     $C$ = find components in the graph (V,E)\;
-    add components $C$ to graph $G$
-    connect exit points $P'$ with their components in $G$\;
-    connect active site $\qinit^i$ with its component in $G$\;
+    add components $C$ as nodes to graph $G$ \\
+    connect exit points $P'$ with their components (nodes) in $G$\;
+    connect active site $\qinit \in \CF^i$ with its component (node) in $G$\;
 }
 }
 \end{algorithm}
@@ -949,14 +950,14 @@ The nodes in this graph are the components of the void space in each frame, the 
 
 One tunnel is defined by the exit point and by the active site.
 If both these nodes are connected to the same component of the graph, they define a static tunnel.
-Such a tunnel can be reconstructed simply by finding a path between these two nodes in the graph.
-If there does not exist any path between the exit point $p \in P^i$ (the exit point at frame $i$) and the active site $\qinit^i$ in the same frame, the dynamic tunnel has to start from a different active site (in one of the previous frames).
-A path from $p$ to the first active site reachable in the graph (measured by the number of edges) describes the dynamic tunnel.
+Such a tunnel can be reconstructed by finding a path between these two nodes in the graph.
+If there does not exist any path between the exit point $p \in P^i$ (the exit point at frame $i$) and the active site $\qinit \in \CF^i$ in the same frame, the dynamic tunnel has to start from a different active site (in one of the previous frames).
+A path from $p \in P^i$ to the first active site $\qinit\in\CF^j, j < i$ reachable in the graph (measured by the number of edges) describes the dynamic tunnel.
 An example is depicted in Fig.~\ref{fig::components}.
 
-There are two possible reasons why the active site of the same frame cannot be reached.
-First, the exit point is not connected with the same component of the graph as the active site.
-Second, the active site does not exist in the given frame, which may happen if large probes are considered.
+%There are two possible reasons why the active site of the same frame cannot be reached.
+%First, the exit point is not connected with the same component of the graph as the active site.
+%Second, the active site does not exist in the given frame, which may happen if large probes are considered.
 
 \begin{figure}
 \centering
