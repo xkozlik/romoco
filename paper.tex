@@ -524,7 +524,7 @@ Figures e--h depict four detected tunnels.
 \label{sec::vbg}
 
 The generation of the random samples directly influences the performance of the RRT-based planners.
-In classic RRT, the random samples are drawn uniformly in the whole configuration space, which leads to the well known narrow passage problem.
+In classic RRT, the random samples are drawn uniformly in the whole configuration space, which leads to the narrow passage problem.
 The void space can be considered as a narrow passage, as the movement of the probe is constrained by many atoms.
 The limitation is even higher for larger probes.
 To boost the growth of the tree inside the narrow void space, the random samples can be generated around places that are believed to be a part of the collision-free region $\CF^i$.
@@ -534,10 +534,9 @@ However, the probability of sampling cannot be increased around all Voronoi vert
 It is necessary to guide the growth of the tree by increasing the probability of sampling only around such Voronoi vertices that can be reached by the tree with a higher probability.
 Such Voronoi vertices have to be located close to the tree.
 Therefore, a subset $\VVA^i \subseteq \VV^i$ of the Voronoi vertices that are close to the tree is maintained (Alg.~\ref{alg::update}).
-A Voronoi vertex $v \in \VV^i$ is considered as active if the distance to its nearest node in the tree is less than $\da$, but larger than
-$\db$.
+A Voronoi vertex $v \in \VV^i$ is considered as active if the distance to its nearest node in the tree is less than $\da$, but larger than $\db$.
 After the update of $\VVA^i$, the tree attempts to expand towards them (Alg.~\ref{alg::main}, line~\ref{alg::main::d}--\ref{alg::main::e}).
-This expansion is not always successfull, especially for distant Voronoi vertices, but it helps the tree to explore the void space.
+This expansion is not always successful, especially for distant Voronoi vertices, but it helps the tree to explore the void space.
 
 
 \begin{algorithm}
@@ -595,8 +594,7 @@ In the second phase, the tree is required to grow outside the protein and theref
 By maintaining the active Voronoi vertices $\VVA^i$, the random points are automatically generated around the borders of the configuration tree (Fig.~\ref{fig::av}).
 As the Voronoi vertices are located inside the protein, generating random samples around them further boosts the search of the internal void space.
 After the tree approaches a vertex $v \in \VVA$ too close (less than the distance $\db$), the vertex is removed from $\VVA^i$ in the next update, and the random samples are not generated around it.
-The upper value $\da$ determines how far from the tree are the random samples generated, while $\db$ prevents to generate
-the random samples around Voronoi vertices, that have already been approached by the tree.
+The upper value $\da$ determines how far from the tree are the random samples generated, while $\db$ prevents to generate the random samples around Voronoi vertices, that have already been approached by the tree.
 The visualization of the tree growth towards the active Voronoi vertices is depicted in Fig.~\ref{fig::1akdvv}.
 
 \begin{figure}
@@ -1267,7 +1265,7 @@ Visualization showing the results of the dynamic tunnel detection performed on t
 \centering
 \includegraphics[width=0.9\textwidth]{fig/caver3450-3700_colored}
 \caption{\label{fig::caver34}
-Visualization of tunnels detected using our method (RRT) in comparison to tunnels detected by CAVER.
+Tunnels detected in a part of MD using our method (RRT) in comparison to tunnels detected by CAVER.
 Both static tunnels detected by CAVER and by our method are depicted in gray.
 Then, colored bars show snapshots where a dynamic tunnel was detected by our algorithm.
 The dynamic tunnel bars are colored according to the order in which a snapshot occurs in the dynamic tunnel.
