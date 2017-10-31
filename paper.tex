@@ -1137,42 +1137,46 @@ The active site appears again inside the void space in frame 702.
 \end{figure*}
 
 
-
-
 \begin{table}
 \centering
 \caption{\label{tab::dyn} The number of frames with detected dynamic tunnels. The number of frames
-    with static tunnels, detected by CAVER 3.0. $^{*}$ number of static tunnels found by the proposed method.
+    with static tunnels, detected by CAVER 3.0.
 }
 \begin{tabular}{ccccc}
 \toprule
-                              &   &  \multicolumn{2}{c}{ Static tunnels}   \\
-                              &    &  {\bf Exists} & {\bf Does not exist} & {\bf Total } \\
+  \multirow{2}{*}{ Dynamic tunnel}   &  \multicolumn{2}{c}{ Static tunnels}   \\
+                                     &  {\bf Exists} & {\bf Not exists} \\
 \midrule                                     
-\multirow{3}{*}{Dynamic tunnels} & {\bf Detected} & 1,324 & 1,027 & 2,351 \\
-                                 & {\bf Not detected} & 3,816/3,118$^*$ & 1,833 & 5,649 \\
-                                 & {\bf Total }       &  5,140 & 2,860 \\
+{\bf End of tunnel/cavity}           & 1,324/661 & 1,027/725  \\
+{\bf Static tunnel}                  & 3,118     &  0   \\
+{\bf No tunnel}                      & 669      & 1,833    \\ 
 \bottomrule                                 
 \end{tabular}
 \end{table}
 
-
-
-
-
-The number of frames where the dynamic tunnels were detected is summarized in Tab.~\ref{tab::dyn}.
-In 2,860 frames, no static tunnel was found by CAVER, but in 1,027 frames of this set, a dynamic tunnel was detected.
-Both static and dynamic tunnels were detected in 1,324 frames.
-These results bring new information about the protein behavior. 
-They show that a path connecting the protein surface with the active site is more frequent than the static tunnels suggest.
-The examples of frames without a static tunnel, but containing a dynamic one, are depicted in Fig.~\ref{fig::seq1}.
-
-
-In the case of 3,816 frames where a static tunnel was detected by CAVER, no dynamic tunnel was detected by the proposed method. 
-3,118 frames out of 3,816 were identified as static.
-This indicates that some tunnels were detected as dynamic instead of static.
-The proposed method is non-deterministic and it may happen, that some part of the tree does not reach the outer region of the protein and consequently, some exit points are not detected.
-This decreases the number of detected static tunnels.
+The number of frames where dynamic tunnels were detected is summarized in Tab.~\ref{tab::dyn}.
+In 2,860 frames, no static tunnel was found by CAVER, but  in 1,027 of these cases, a dynamic tunnel was detected and
+in other 725 frames, a part of the tunnel (cavity) was detected.
+The total number of frames where either end of dynamic tunnel was detected or a cavity that is part of a dynamic tunnel was
+1,197.
+This shows that the proposed dynamic tunnel detection can bring new information about 1,197 of tunnels, that would be 
+discarded in the analysis based solely on static tunnels.
+No static tunnel was identified by the proposed method in frames, where no frames were detected by CAVER.
+This is not surprising, as there are no active site in these frames so neither static or dynamic tunnel can start in them.
+No dynamic neither static tunnel was identified in 1,833 frames and therefore, behavior in these frames  remains unknown.
+The results also show that no static tunnel was identified in 669 frames by the proposed method, while CAVER detected static tunnels there.
+%The number of frames where the dynamic tunnels were detected is summarized in Tab.~\ref{tab::dyn}.
+%In 2,860 frames, no static tunnel was found by CAVER, but in 1,027 frames of this set, a dynamic tunnel was detected.
+%Both static and dynamic tunnels were detected in 1,324 frames.
+%These results bring new information about the protein behavior. 
+%They show that a path connecting the protein surface with the active site is more frequent than the static tunnels suggest.
+%The examples of frames without a static tunnel, but containing a dynamic one, are depicted in Fig.~\ref{fig::seq1}.
+%
+%
+%In the case of 3,816 frames where a static tunnel was detected by CAVER, no dynamic tunnel was detected by the proposed method. 
+%3,118 frames out of 3,816 were identified as static.
+%This indicates that some tunnels were detected as dynamic instead of static.
+The proposed method is non-deterministic and it may happen, that some part of the tree does not reach the outer region of the protein and consequently, some exit points are not detected, which decreases the numbef detected static tunnels.
 These missed exit points are then reached in the next frame which leads to the detection of the dynamic tunnel.
 The number of correctly classified static tunnels can be increased by using higher $\Imax$.
 In our experiment, $\Imax=1,200$ was used with a lower value in order to process the whole sequence of 8,000 frames in a reasonable time.
@@ -1185,6 +1189,13 @@ In comparison, the computation of the static tunnels using CAVER 3.0 tool takes 
 The processing times for a long sequence of 8,000 frames leads to around 33 hours of computation on a single processor.
 Such time is still negligible in the comparison to the preparation of the molecular dynamics simulation.
 %Times: 8000 frames, cca 35 hodin = cca 15s/frame. Caver na mem ntb: cca 11s/frame.
+
+The examples of frames without a static tunnel, but with a dynamic one, are depicted in Fig.~\ref{fig::seq1}.
+A static tunnel and also a dynamic tunnel was detected in 1324 frames.
+These results bring new information about the protein, as they show, that a pathway to the active site exists more
+frequently than is described by the classic static tunnels.
+
+
 
 Many dynamic tunnels were discovered in the studied protein dynamics.
 The inspection of the detected tunnels utilizes a simple visualization which shows all parts of the dynamic tunnel in one frame.
